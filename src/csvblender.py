@@ -1,9 +1,6 @@
 #!/usr/bin/env python3
 
 # Author      : Ryan Long
-# Created    :  2016-02-23
-# Last Mod  :   test
-# Version     :   1.0
 
 # Scans through a source file for any values missing in merge file based upon a column "KEY".
 # Any missing values will be written to the outputfile along with the original values.  Values
@@ -41,24 +38,38 @@ def main():
 
     def listToCsv(list, fieldnames, csvFilePath):
         """Converts a list of dictionaries into a csv file."""
-        with open(csvFilePath, 'w') as outputFile:
-                logger.info("Writing dictionary to file {}...".format(csvFilePath))
-                writer = csv.DictWriter(
-                    outputFile, fieldnames=fieldnames, dialect='excel', lineterminator='\n', quoting=csv.QUOTE_ALL)
-                logger.info("Writing header to file {}...")
-                writer.writeheader()
-                count = 1
-                for row in list:
-                    logger.info("Writing row {} to file...".format(count))
-                    count += 1
-                    writer.writerow(row)
+        try:
+            with open(csvFilePath, 'w') as outputFile:
+                    logger.info("Writing dictionary to file {}...".format(csvFilePath))
+                    writer = csv.DictWriter(
+                        outputFile, fieldnames=fieldnames, dialect='excel', lineterminator='\n', quoting=csv.QUOTE_ALL)
+                    logger.info("Writing header to file {}...")
+                    writer.writeheader()
+                    count = 1
+                    for row in list:
+                        logger.info("Writing row {} to file...".format(count))
+                        count += 1
+                        writer.writerow(row)
+        except PermissionError:
+            logger.exception("Check the files referenced are not open or being used by another process")
+            sys.exit(1)
+        except FileNotFoundError:
+            logger.exception("The file \"%s\" could not be found", args.input_csv)
+            sys.exit(1)
 
     def getFieldNames(csvFilePath):
         """Gets the fieldnames or column names from a csv file."""
-        with open(csvFilePath, 'r') as reader:
-            logger.info("Getting header information from {}".format(csvFilePath))
-            reader = csv.DictReader(reader, dialect='excel', lineterminator='\n', quoting=csv.QUOTE_ALL)
-            return reader.fieldnames
+        try:
+            with open(csvFilePath, 'r') as reader:
+                logger.info("Getting header information from {}".format(csvFilePath))
+                reader = csv.DictReader(reader, dialect='excel', lineterminator='\n', quoting=csv.QUOTE_ALL)
+                return reader.fieldnames
+        except PermissionError:
+            logger.exception("Check the files referenced are not open or being used by another process")
+            sys.exit(1)
+        except FileNotFoundError:
+            logger.exception("The file \"%s\" could not be found", args.input_csv)
+            sys.exit(1)
 
     def blendFiles(sourceFilePath, mergeFilePath, outputFilePath):
         """Blends two files together and writes the result to an output file.  The source file contains
