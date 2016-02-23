@@ -1,0 +1,7 @@
+*.csv
+log.txt
+__pycache__
+archive
+*sublime-*
+*.swp
+*log*

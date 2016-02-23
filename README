@@ -1,0 +1,9 @@
+Needs
+1. Replace field based on one or more values, but only values in that rows
+2. Write output to csv (incrementally, not all in memory)
+3. Write log of each manipulation.  Show live and write to file
+4. Ensure both files
+  a. Exist
+  b. and/or are writable
+5. Keep track of row numbers and columns being processed
+6. Output file should go to an output folder.
