@@ -1,4 +1,4 @@
-![alt text][python]
+![alt text][python] [![Twitter URL](https://img.shields.io/twitter/url/http/shields.io.svg?style=social)](https://twitter.com/saltycatfish)
 # CSV-Blender
 A python3 script that blends two csv files together, filling in data found in a source csv file that is missing in a merge file.
 
