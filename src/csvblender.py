@@ -5,7 +5,10 @@
 # Last Mod  :   test
 # Version     :   1.0
 
-# Parses a csv file and outputs the results into a destination csv file
+# Scans through a source file for any values missing in merge file based upon a column "KEY".
+# Any missing values will be written to the outputfile along with the original values.  Values
+# already present in the merge file will not be overwritten, even if the source file contains
+# different information.
 
 import sys
 import csv
@@ -42,6 +45,7 @@ def main():
                 logger.info("Writing dictionary to file {}...".format(csvFilePath))
                 writer = csv.DictWriter(
                     outputFile, fieldnames=fieldnames, dialect='excel', lineterminator='\n', quoting=csv.QUOTE_ALL)
+                logger.info("Writing header to file {}...")
                 writer.writeheader()
                 count = 1
                 for row in list:
