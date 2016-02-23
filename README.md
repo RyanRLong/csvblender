@@ -1,4 +1,5 @@
-# csv-blender
+![alt text][python]
+# CSV-Blender
 A python3 script that blends two csv files together, filling in data found in a source csv file that is missing in a merge file.
 
 The script works by receiving two files; a source file and a merge file.
@@ -8,7 +9,7 @@ The merge file is the file which is missing values in its rows.  The source file
 > **IMPORTANT** Both merge and source files must contain one column with the header "KEY".  This will be used as the lookup to match merge file rows with source file rows.
 
 CSV-Blender takes 4 positional arguments:
-* source file - the paht of the file that potentially contains values missing from the merge file.  
+* source file - the path of the file that potentially contains values missing from the merge file.  
 * merge file - the path of the file which is missing values that could be found in the source file.
 * output file - the path of the file to write the final results to
 * log file - the path of the file to write the log to
@@ -20,3 +21,5 @@ CSV-Blender takes 4 positional arguments:
 * Option of overwriting pre-existing values in a merge file.
 
 ## Changelog
+
+[python]: https://img.shields.io/badge/style-plastic-green.svg?style=plastic,label=python
