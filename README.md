@@ -22,4 +22,4 @@ CSV-Blender takes 4 positional arguments:
 
 ## Changelog
 
-[python]: https://img.shields.io/badge/style-plastic-green.svg?style=plastic,label=python
+[python]: https://img.shields.io/badge/Python%20Version-3.4-blue.svg
