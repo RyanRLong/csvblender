@@ -1,6 +1,5 @@
-from csvblender.src.csvblender import CSVBlender
 import unittest
-import logging
+from csvblender.csvblender import CSVBlender
 
 
 class CSVBlenderTests(unittest.TestCase):
