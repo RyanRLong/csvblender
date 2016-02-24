@@ -19,6 +19,7 @@ CSV-Blender takes 4 positional arguments:
 ## TODO
 * Verify that the headers in the source file are all contained in the merge file.
 * Option of overwriting pre-existing values in a merge file.
+* Flesh out the argparse a little better for the -h option
 
 ## Changelog
 

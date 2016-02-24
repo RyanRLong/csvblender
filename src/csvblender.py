@@ -13,86 +13,73 @@ import logging
 import argparse
 
 
-def main():
+class CSVBlender:
     """Main execution"""
-    def csvToList(csvFilePath):
+    def __init__(self, logger=None):
+        if logger == None:
+            self.logger = logging.getLogger(__name__)
+            self.logger.addHandler(logging.NullHandler())
+        else:
+            self.logger = logger
+
+    def csvToList(self, csvFilePath):
         """Coverts a csv file into a list of rows, with each row containing a
         dict containing keys as column names and values as field values"""
         outputList = []
         processedRowCount = 0
-        try:
-            logger.info("Converting file {} to dictionary...".format(csvFilePath))
-            with open(csvFilePath, 'r') as csvFile:
-                reader = csv.DictReader(csvFile, dialect='excel', lineterminator='\n', quoting=csv.QUOTE_ALL)
-                for row in reader:
-                    outputList.append(row)
-                    processedRowCount += 1
-                logger.info("Processed {} rows from file {}".format(processedRowCount, csvFilePath))
-                return outputList
-        except PermissionError:
-            logger.exception("Check the files referenced are not open or being used by another process")
-            sys.exit(1)
-        except FileNotFoundError:
-            logger.exception("The file \"%s\" could not be found", args.input_csv)
-            sys.exit(1)
+        self.logger.info("Converting file {} to dictionary...".format(csvFilePath))
+        with open(csvFilePath, 'r') as csvFile:
+            reader = csv.DictReader(csvFile, dialect='excel', lineterminator='\n', quoting=csv.QUOTE_ALL)
+            for row in reader:
+                outputList.append(row)
+                processedRowCount += 1
+            self.logger.info("Processed {} rows from file {}".format(processedRowCount, csvFilePath))
+            return outputList
 
-    def listToCsv(list, fieldnames, csvFilePath):
+    def listToCsv(self, list, fieldnames, csvFilePath):
         """Converts a list of dictionaries into a csv file."""
-        try:
-            with open(csvFilePath, 'w') as outputFile:
-                    logger.info("Writing dictionary to file {}...".format(csvFilePath))
-                    writer = csv.DictWriter(
-                        outputFile, fieldnames=fieldnames, dialect='excel', lineterminator='\n', quoting=csv.QUOTE_ALL)
-                    logger.info("Writing header to file {}...")
-                    writer.writeheader()
-                    count = 1
-                    for row in list:
-                        logger.info("Writing row {} to file...".format(count))
-                        count += 1
-                        writer.writerow(row)
-        except PermissionError:
-            logger.exception("Check the files referenced are not open or being used by another process")
-            sys.exit(1)
-        except FileNotFoundError:
-            logger.exception("The file \"%s\" could not be found", args.input_csv)
-            sys.exit(1)
+        with open(csvFilePath, 'w') as outputFile:
+                self.logger.info("Writing dictionary to file {}...".format(csvFilePath))
+                writer = csv.DictWriter(
+                    outputFile, fieldnames=fieldnames, dialect='excel', lineterminator='\n', quoting=csv.QUOTE_ALL)
+                self.logger.info("Writing header to file {}...")
+                writer.writeheader()
+                count = 1
+                for row in list:
+                    self.logger.info("Writing row {} to file...".format(count))
+                    count += 1
+                    writer.writerow(row)
 
-    def getFieldNames(csvFilePath):
+    def getFieldNames(self, csvFilePath):
         """Gets the fieldnames or column names from a csv file."""
-        try:
-            with open(csvFilePath, 'r') as reader:
-                logger.info("Getting header information from {}".format(csvFilePath))
-                reader = csv.DictReader(reader, dialect='excel', lineterminator='\n', quoting=csv.QUOTE_ALL)
-                return reader.fieldnames
-        except PermissionError:
-            logger.exception("Check the files referenced are not open or being used by another process")
-            sys.exit(1)
-        except FileNotFoundError:
-            logger.exception("The file \"%s\" could not be found", args.input_csv)
-            sys.exit(1)
+        with open(csvFilePath, 'r') as reader:
+            self.logger.info("Getting header information from {}".format(csvFilePath))
+            reader = csv.DictReader(reader, dialect='excel', lineterminator='\n', quoting=csv.QUOTE_ALL)
+            return reader.fieldnames
 
-    def blendFiles(sourceFilePath, mergeFilePath, outputFilePath):
+    def blendFiles(self, sourceFilePath, mergeFilePath, outputFilePath):
         """Blends two files together and writes the result to an output file.  The source file contains
         the data you wish to extract, while the merge file will be filled with data it is missing that
         exists in the source file."""
-        sourceList = csvToList(sourceFilePath)
-        mergeList = csvToList(mergeFilePath)
-        fieldnames = getFieldNames(mergeFilePath)
-        sourceRowCount = mergeRowCount = 0
+        sourceList = self.csvToList(sourceFilePath)
+        mergeList = self.csvToList(mergeFilePath)
+        fieldnames = self.getFieldNames(mergeFilePath)
 
+        sourceRowCount = mergeRowCount = 0
         for mergeRow in mergeList:
             mergeRowCount += 1
-            logger.info("Checking merge row {} ...".format(mergeRowCount))
+            self.logger.info("Checking merge row {} ...".format(mergeRowCount))
             for sourceRow in sourceList:
                 sourceRowCount += 1
                 if mergeRow.get('KEY') == sourceRow.get('KEY'):
-                    logger.info("Match found: blending merge: row {} key {} with source: row {} key {}...".format(
+                    self.logger.info("Match found: blending merge: row {} key {} with source: row {} key {}...".format(
                         mergeRowCount, mergeRow['KEY'], sourceRowCount, sourceRow['KEY']))
                     mergeRow.update(sourceRow)
             sourceRowCount = 0
 
-        listToCsv(mergeList, fieldnames, outputFilePath)
+        self.listToCsv(mergeList, fieldnames, outputFilePath)
 
+if __name__ == '__main__':
     # setup arg parsers
     parser = argparse.ArgumentParser()
     parser.add_argument("sourceCSV", help="the file that contains the data you want lookup")
@@ -121,7 +108,5 @@ def main():
     handler.setFormatter(formatter)
     logger.addHandler(handler)
 
-    blendFiles(args.sourceCSV, args.mergeCSV, args.outputCSV)
-
-if __name__ == '__main__':
-    main()
+    blender = CSVBlender(logger)
+    blender.blendFiles(args.sourceCSV, args.mergeCSV, args.outputCSV)
