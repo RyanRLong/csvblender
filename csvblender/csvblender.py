@@ -79,34 +79,37 @@ class CSVBlender:
 
         self.listToCsv(mergeList, fieldnames, outputFilePath)
 
+    def main(args=None):
+        """Main execution"""
+        parser = argparse.ArgumentParser()
+        parser.add_argument("sourceCSV", help="the file that contains the data you want lookup")
+        parser.add_argument(
+            "mergeCSV", help="the file that you wish to merge missing values form the source file with")
+        parser.add_argument("outputCSV", help="the output file of the merge")
+        parser.add_argument("logFile", help="the path of the log file")
+        args = parser.parse_args()
+
+        logging.basicConfig(format='%(asctime)s %(levelname)s:%(message)s',
+                            filename='log.txt', filemode='w', level=logging.DEBUG)
+        logger = logging.getLogger()
+        logger.setLevel(logging.DEBUG)
+
+        # create console handler
+        handler = logging.StreamHandler()
+        handler.setLevel(logging.DEBUG)
+        formatter = logging.Formatter('%(asctime)s %(levelname)s:%(message)s')
+        handler.setFormatter(formatter)
+        logger.addHandler(handler)
+
+        # create file handler
+        handler = logging.FileHandler("log.txt", "w", encoding=None, delay=True)
+        handler.setLevel(logging.DEBUG)
+        formatter = logging.Formatter('%(asctime)s %(levelname)s:%(message)s')
+        handler.setFormatter(formatter)
+        logger.addHandler(handler)
+
+        blender = CSVBlender(logger)
+        blender.blendFiles(args.sourceCSV, args.mergeCSV, args.outputCSV)
+
 if __name__ == '__main__':
-    # setup arg parsers
-    parser = argparse.ArgumentParser()
-    parser.add_argument("sourceCSV", help="the file that contains the data you want lookup")
-    parser.add_argument(
-        "mergeCSV", help="the file that you wish to merge missing values form the source file with")
-    parser.add_argument("outputCSV", help="the output file of the merge")
-    parser.add_argument("logFile", help="the path of the log file")
-    args = parser.parse_args()
-
-    logging.basicConfig(format='%(asctime)s %(levelname)s:%(message)s',
-                        filename='log.txt', filemode='w', level=logging.DEBUG)
-    logger = logging.getLogger()
-    logger.setLevel(logging.DEBUG)
-
-    # create console handler
-    handler = logging.StreamHandler()
-    handler.setLevel(logging.DEBUG)
-    formatter = logging.Formatter('%(asctime)s %(levelname)s:%(message)s')
-    handler.setFormatter(formatter)
-    logger.addHandler(handler)
-
-    # create file handler
-    handler = logging.FileHandler("log.txt", "w", encoding=None, delay=True)
-    handler.setLevel(logging.DEBUG)
-    formatter = logging.Formatter('%(asctime)s %(levelname)s:%(message)s')
-    handler.setFormatter(formatter)
-    logger.addHandler(handler)
-
-    blender = CSVBlender(logger)
-    blender.blendFiles(args.sourceCSV, args.mergeCSV, args.outputCSV)
+    CSVBlender().main()
