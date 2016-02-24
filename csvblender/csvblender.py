@@ -81,12 +81,35 @@ class CSVBlender:
 
     def main(args=None):
         """Main execution"""
-        parser = argparse.ArgumentParser()
-        parser.add_argument("sourceCSV", help="the file that contains the data you want lookup")
+        parser = argparse.ArgumentParser(
+            description='''
+            CSVBlender searches for values missing from the merge file in the source
+            using a KEY to match rows and identical column values to match field values.
+
+            To use, ensure that each csv file has one column header labeled "KEY".  All
+            column headers in source file must be present in merge file.
+            '''
+            )
         parser.add_argument(
-            "mergeCSV", help="the file that you wish to merge missing values form the source file with")
-        parser.add_argument("outputCSV", help="the output file of the merge")
-        parser.add_argument("logFile", help="the path of the log file")
+            "sourceCSV",
+            help="the file that contains the data you want lookup",
+            metavar="source_csv"
+            )
+        parser.add_argument(
+            "mergeCSV",
+            help="the file that you wish to merge missing values form the source file with",
+            metavar="merge_csv"
+            )
+        parser.add_argument(
+            "outputCSV",
+            help="the output file of the merge",
+            metavar="output_csv"
+            )
+        parser.add_argument(
+            "logFile",
+            help="the path of the log file",
+            metavar="log_file"
+            )
         args = parser.parse_args()
 
         logging.basicConfig(format='%(asctime)s %(levelname)s:%(message)s',

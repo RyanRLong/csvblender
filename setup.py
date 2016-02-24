@@ -5,6 +5,8 @@ setup(name='CSV-Blender',
       description='Blending CSV Files',
       author='Ryan Long',
       author_email='RyanLong1004@gmail.com',
+      license='MIT',
       url='none',
       packages=['csvblender'],
-     )
+      zip_safe=False
+      )
