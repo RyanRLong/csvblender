@@ -4,7 +4,7 @@ A python3 script that blends two csv files together, filling in data found in a 
 
 The script works by receiving two files; a source file and a merge file.
 
-The merge file is the file which is missing values in its rows.  The source file is the file you believe contains some or all of those missing values.  CSV-Blender take each row from the merge file and compares it against each row in the source file, looking for a *KEY* match.  If CSV-Blender finds a match, it will copy any values found in the source file row into the merge file row *only if those values are missing from the merge file row*.  CSV-Blender does not overwrite pre-existing values.
+The merge file is the file which is missing values in its rows.  The source file is the file you believe contains some or all of those missing values.  CSV-Blender take each row from the merge file and compares it against each row in the source file, looking for a *KEY* match.  If CSV-Blender finds a match, it will copy any values found in the source file row into the merge file row based upon matching column header values.  **CSV-Blender does not overwrite pre-existing values.**  It will only fill in blank values.
 
 > **IMPORTANT** Both merge and source files must contain one column with the header "KEY".  This will be used as the lookup to match merge file rows with source file rows.
 
